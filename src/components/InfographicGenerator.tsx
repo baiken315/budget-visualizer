@@ -145,40 +145,64 @@ export function InfographicGenerator() {
         </div>
       </div>
 
-      {/* The Infographic Card */}
+      {/* The Infographic Card - Using inline styles with hex colors for html2canvas compatibility */}
       <div
         ref={infographicRef}
-        className="bg-white text-gray-900 rounded-2xl overflow-hidden shadow-xl max-w-lg mx-auto"
-        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        style={{
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          backgroundColor: '#ffffff',
+          color: '#111827',
+          borderRadius: '1rem',
+          overflow: 'hidden',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          maxWidth: '32rem',
+          margin: '0 auto',
+        }}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6">
-          <div className="text-sm font-medium opacity-80 mb-1">MY CONTRIBUTION TO</div>
-          <h3 className="text-2xl font-bold">{jurisdiction.name}</h3>
-          <div className="text-sm opacity-80 mt-1">
+        <div style={{
+          background: 'linear-gradient(to right, #2563eb, #1e40af)',
+          color: '#ffffff',
+          padding: '1.5rem',
+        }}>
+          <div style={{ fontSize: '0.875rem', fontWeight: 500, opacity: 0.8, marginBottom: '0.25rem' }}>MY CONTRIBUTION TO</div>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 700 }}>{jurisdiction.name}</h3>
+          <div style={{ fontSize: '0.875rem', opacity: 0.8, marginTop: '0.25rem' }}>
             {jurisdiction.type.charAt(0).toUpperCase() + jurisdiction.type.slice(1)} • {jurisdiction.state} • FY {jurisdiction.fiscalYear}
           </div>
         </div>
 
         {/* Main Stats */}
-        <div className="p-6 bg-gradient-to-b from-blue-50 to-white">
-          <div className="text-center mb-6">
-            <div className="text-sm text-gray-600 mb-1">Annual Contribution</div>
-            <div className="text-4xl font-bold text-blue-600">
+        <div style={{
+          padding: '1.5rem',
+          background: 'linear-gradient(to bottom, #eff6ff, #ffffff)',
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '0.875rem', color: '#4b5563', marginBottom: '0.25rem' }}>Annual Contribution</div>
+            <div style={{ fontSize: '2.25rem', fontWeight: 700, color: '#2563eb' }}>
               {formatCurrency(contribution.totalAnnual, false)}
             </div>
-            <div className="text-xl text-gray-700 mt-2">
-              = <span className="font-semibold">{formatCurrency(roundedDaily)}</span>/day
+            <div style={{ fontSize: '1.25rem', color: '#374151', marginTop: '0.5rem' }}>
+              = <span style={{ fontWeight: 600 }}>{formatCurrency(roundedDaily)}</span>/day
             </div>
-            <div className="mt-2 inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+            <div style={{
+              marginTop: '0.5rem',
+              display: 'inline-block',
+              padding: '0.25rem 0.75rem',
+              backgroundColor: '#dcfce7',
+              color: '#15803d',
+              borderRadius: '9999px',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+            }}>
               {getEverydayComparison(roundedDaily)}
             </div>
           </div>
 
           {/* Revenue Breakdown */}
-          <div className="mb-6">
-            <div className="text-sm font-semibold text-gray-600 mb-3">WHERE IT COMES FROM</div>
-            <div className="space-y-2">
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#4b5563', marginBottom: '0.75rem' }}>WHERE IT COMES FROM</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {[
                 { name: 'Property Tax', amount: contribution.breakdown.propertyTax },
                 { name: 'Income/Wage Tax', amount: contribution.breakdown.incomeTax + contribution.breakdown.wageTax },
@@ -189,15 +213,14 @@ export function InfographicGenerator() {
                 .map((source) => {
                   const pct = (source.amount / contribution.totalAnnual) * 100;
                   return (
-                    <div key={source.name} className="flex items-center gap-2">
-                      <div className="w-28 text-sm text-gray-600 shrink-0">{source.name}</div>
-                      <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+                    <div key={source.name} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <div style={{ width: '7rem', fontSize: '0.875rem', color: '#4b5563', flexShrink: 0 }}>{source.name}</div>
+                      <div style={{ flex: 1, height: '1rem', backgroundColor: '#e5e7eb', borderRadius: '9999px', overflow: 'hidden' }}>
                         <div
-                          className="h-full bg-blue-500 rounded-full"
-                          style={{ width: `${pct}%` }}
+                          style={{ height: '100%', backgroundColor: '#3b82f6', borderRadius: '9999px', width: `${pct}%` }}
                         />
                       </div>
-                      <div className="w-20 text-right text-sm font-medium shrink-0">
+                      <div style={{ width: '5rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 500, flexShrink: 0 }}>
                         {formatCurrency(source.amount, false)}
                       </div>
                     </div>
@@ -207,40 +230,54 @@ export function InfographicGenerator() {
           </div>
 
           {/* Services Grid */}
-          <div className="mb-6">
-            <div className="text-sm font-semibold text-gray-600 mb-3">WHAT IT SUPPORTS (DAILY)</div>
-            <div className="grid grid-cols-2 gap-2">
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#4b5563', marginBottom: '0.75rem' }}>WHAT IT SUPPORTS (DAILY)</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
               {topServices.map((service) => (
                 <div
                   key={service.categoryId}
-                  className="p-3 rounded-lg text-white text-center"
-                  style={{ background: service.color }}
+                  style={{
+                    padding: '0.75rem',
+                    borderRadius: '0.5rem',
+                    color: '#ffffff',
+                    textAlign: 'center',
+                    background: service.color,
+                  }}
                 >
-                  <ServiceIconComponent icon={service.icon} size={20} className="mx-auto mb-1" />
-                  <div className="text-xs opacity-90">{service.categoryName}</div>
-                  <div className="text-lg font-bold">{formatCurrency(roundDaily(service.daily, dailyRounding))}</div>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.25rem' }}>
+                    <ServiceIconComponent icon={service.icon} size={20} />
+                  </div>
+                  <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>{service.categoryName}</div>
+                  <div style={{ fontSize: '1.125rem', fontWeight: 700 }}>{formatCurrency(roundDaily(service.daily, dailyRounding))}</div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Collective Impact */}
-          <div className="text-center p-4 bg-gray-100 rounded-lg">
-            <div className="text-gray-600">
-              You're <strong>1 of {jurisdiction.population.toLocaleString()}</strong> residents
+          <div style={{ textAlign: 'center', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
+            <div style={{ color: '#4b5563' }}>
+              You&apos;re <strong>1 of {jurisdiction.population.toLocaleString()}</strong> residents
             </div>
-            <div className="text-sm text-gray-500 mt-1">
+            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
               Together, we fund {formatCurrency(jurisdiction.totalBudget, false)} in services
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-          <div className="text-xs text-gray-500">
+        <div style={{
+          padding: '1rem 1.5rem',
+          backgroundColor: '#f9fafb',
+          borderTop: '1px solid #e5e7eb',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+          <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
             Generated by Budget Builder
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-500">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', color: '#6b7280' }}>
             <QrCode size={12} />
             Scan to try it yourself
           </div>
