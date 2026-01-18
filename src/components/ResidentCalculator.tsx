@@ -118,7 +118,7 @@ export function ResidentCalculator() {
                 type="number"
                 value={homeValue}
                 onChange={(e) => setHomeValue(Number(e.target.value))}
-                className="input pl-8"
+                className="input pl-9"
                 min={50000}
                 max={2000000}
                 step={5000}
@@ -145,7 +145,7 @@ export function ResidentCalculator() {
               type="number"
               value={householdIncome}
               onChange={(e) => setHouseholdIncome(Number(e.target.value))}
-              className="input pl-8"
+              className="input pl-9"
               min={20000}
               max={500000}
               step={1000}
