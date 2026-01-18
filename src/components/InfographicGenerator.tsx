@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { useBudgetStore } from '@/store/budgetStore';
 import {
   formatCurrency,
@@ -9,44 +9,63 @@ import {
   getEverydayComparison,
 } from '@/lib/calculations';
 import { ServiceIconComponent } from '@/components/ui/Icons';
-import { Download, Share2, QrCode } from 'lucide-react';
+import { Download, Share2, QrCode, Loader2 } from 'lucide-react';
 
 export function InfographicGenerator() {
   const { jurisdiction, contribution, residentProfile, budgetCategories } = useBudgetStore();
   const infographicRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState<'png' | 'pdf' | null>(null);
 
   const handleDownload = useCallback(async () => {
-    if (!infographicRef.current) return;
+    if (!infographicRef.current) {
+      alert('Unable to find infographic element.');
+      return;
+    }
 
+    setIsExporting('png');
     try {
-      const html2canvas = (await import('html2canvas')).default;
+      const html2canvasModule = await import('html2canvas');
+      const html2canvas = html2canvasModule.default;
+
       const canvas = await html2canvas(infographicRef.current, {
         scale: 2,
         backgroundColor: '#ffffff',
         logging: false,
+        useCORS: true,
       });
 
       const link = document.createElement('a');
       link.download = `${jurisdiction?.name || 'budget'}-contribution.png`;
       link.href = canvas.toDataURL('image/png');
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error('Error generating image:', error);
       alert('Failed to generate image. Please try again.');
+    } finally {
+      setIsExporting(null);
     }
   }, [jurisdiction?.name]);
 
   const handleDownloadPDF = useCallback(async () => {
-    if (!infographicRef.current) return;
+    if (!infographicRef.current) {
+      alert('Unable to find infographic element.');
+      return;
+    }
 
+    setIsExporting('pdf');
     try {
-      const html2canvas = (await import('html2canvas')).default;
-      const { jsPDF } = await import('jspdf');
+      const html2canvasModule = await import('html2canvas');
+      const html2canvas = html2canvasModule.default;
+      const jspdfModule = await import('jspdf');
+      const { jsPDF } = jspdfModule;
 
       const canvas = await html2canvas(infographicRef.current, {
         scale: 2,
         backgroundColor: '#ffffff',
         logging: false,
+        useCORS: true,
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -61,6 +80,8 @@ export function InfographicGenerator() {
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsExporting(null);
     }
   }, [jurisdiction?.name]);
 
@@ -87,13 +108,21 @@ export function InfographicGenerator() {
           Download and share to help others understand their community contribution
         </p>
         <div className="flex flex-wrap gap-3">
-          <button onClick={handleDownload} className="btn-primary flex items-center gap-2">
-            <Download size={18} />
-            Download PNG
+          <button
+            onClick={handleDownload}
+            disabled={isExporting !== null}
+            className="btn-primary flex items-center gap-2 disabled:opacity-50"
+          >
+            {isExporting === 'png' ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
+            {isExporting === 'png' ? 'Generating...' : 'Download PNG'}
           </button>
-          <button onClick={handleDownloadPDF} className="btn-secondary flex items-center gap-2">
-            <Download size={18} />
-            Download PDF
+          <button
+            onClick={handleDownloadPDF}
+            disabled={isExporting !== null}
+            className="btn-secondary flex items-center gap-2 disabled:opacity-50"
+          >
+            {isExporting === 'pdf' ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
+            {isExporting === 'pdf' ? 'Generating...' : 'Download PDF'}
           </button>
           <button
             onClick={() => {
@@ -153,6 +182,7 @@ export function InfographicGenerator() {
               {[
                 { name: 'Property Tax', amount: contribution.breakdown.propertyTax },
                 { name: 'Income/Wage Tax', amount: contribution.breakdown.incomeTax + contribution.breakdown.wageTax },
+                { name: 'Sales Tax', amount: contribution.breakdown.salesTax },
                 { name: 'Utilities & Fees', amount: contribution.breakdown.utilityFees + contribution.breakdown.otherFees },
               ]
                 .filter((r) => r.amount > 0)
@@ -160,14 +190,14 @@ export function InfographicGenerator() {
                   const pct = (source.amount / contribution.totalAnnual) * 100;
                   return (
                     <div key={source.name} className="flex items-center gap-2">
-                      <div className="w-24 text-sm text-gray-600">{source.name}</div>
+                      <div className="w-28 text-sm text-gray-600 shrink-0">{source.name}</div>
                       <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-blue-500 rounded-full"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <div className="w-20 text-right text-sm font-medium">
+                      <div className="w-20 text-right text-sm font-medium shrink-0">
                         {formatCurrency(source.amount, false)}
                       </div>
                     </div>
