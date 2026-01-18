@@ -241,18 +241,65 @@ export function ContributionDashboard() {
   const getCalculationDetails = (): Record<string, CalculationDetail> => {
     const details: Record<string, CalculationDetail> = {};
 
-    // Property Tax
-    const propertySource = revenueSources.find(s => s.type === 'property_tax');
-    if (propertySource && residentProfile.housingStatus === 'own' && residentProfile.homeValue) {
-      const assessmentRatio = propertySource.base || 1;
-      const millRate = propertySource.rate || 0.01;
+    // Property Tax - handle real estate and personal property separately
+    const realEstateSource = revenueSources.find(s =>
+      s.type === 'property_tax' &&
+      (s.id.includes('real-estate') || s.name.toLowerCase().includes('real estate') ||
+       (!s.id.includes('personal') && !s.name.toLowerCase().includes('personal')))
+    );
+    const personalPropertySource = revenueSources.find(s =>
+      s.type === 'property_tax' &&
+      (s.id.includes('personal') || s.name.toLowerCase().includes('personal'))
+    );
+
+    // Calculate components
+    let realEstateTax = 0;
+    let personalPropertyTax = 0;
+
+    if (realEstateSource && residentProfile.housingStatus === 'own' && residentProfile.homeValue) {
+      const assessmentRatio = realEstateSource.base || 1;
+      const rate = realEstateSource.rate || 0.01;
       const assessedValue = residentProfile.homeValue * assessmentRatio;
+      realEstateTax = assessedValue * rate;
+    }
+
+    if (personalPropertySource && residentProfile.vehiclesRegistered) {
+      const vehicleValue = 25000; // Assumed average vehicle value
+      const totalVehicleValue = residentProfile.vehiclesRegistered * vehicleValue;
+      const rate = personalPropertySource.rate || 0.04;
+      personalPropertyTax = totalVehicleValue * rate;
+    }
+
+    // Show combined property tax with breakdown
+    if (realEstateTax > 0 || personalPropertyTax > 0) {
+      const parts: string[] = [];
+      const valueParts: string[] = [];
+      const explanationParts: string[] = [];
+
+      if (realEstateTax > 0 && realEstateSource) {
+        const assessmentRatio = realEstateSource.base || 1;
+        const rate = realEstateSource.rate || 0.01;
+        const perHundred = rate * 100;
+        parts.push('Home Value × Rate');
+        valueParts.push(`${formatCurrency(residentProfile.homeValue!, false)} × $${perHundred.toFixed(4)}/$100 = ${formatCurrency(realEstateTax)}`);
+        explanationParts.push(`Real estate tax: ${formatCurrency(residentProfile.homeValue!, false)} home × $${perHundred.toFixed(4)} per $100 assessed (${(assessmentRatio * 100).toFixed(0)}% of market value)`);
+      }
+
+      if (personalPropertyTax > 0 && personalPropertySource) {
+        const rate = personalPropertySource.rate || 0.04;
+        const perHundred = rate * 100;
+        const vehicleValue = 25000;
+        parts.push('Vehicles × Avg Value × Rate');
+        valueParts.push(`${residentProfile.vehiclesRegistered} × $25,000 × $${perHundred.toFixed(2)}/$100 = ${formatCurrency(personalPropertyTax)}`);
+        explanationParts.push(`Personal property tax: ${residentProfile.vehiclesRegistered} vehicle(s) at assumed $${vehicleValue.toLocaleString()} each × $${perHundred.toFixed(2)} per $100`);
+      }
+
       details.propertyTax = {
         label: 'Property Tax',
-        formula: 'Home Value × Assessment Ratio × Mill Rate',
-        values: `${formatCurrency(residentProfile.homeValue, false)} × ${(assessmentRatio * 100).toFixed(0)}% × ${(millRate * 1000).toFixed(1)} mills`,
+        formula: parts.join(' + '),
+        values: valueParts.join('\n'),
         result: formatCurrency(contribution.breakdown.propertyTax),
-        explanation: `Your home is assessed at ${formatCurrency(assessedValue, false)} (${(assessmentRatio * 100).toFixed(0)}% of market value). The mill rate of ${(millRate * 1000).toFixed(1)} means you pay $${(millRate * 1000).toFixed(2)} per $1,000 of assessed value.`
+        explanation: explanationParts.join('. ') + '.'
       };
     }
 
@@ -365,6 +412,13 @@ export function ContributionDashboard() {
         </div>
       </div>
 
+      {/* Who Funds the Budget - Revenue Attribution (Prominent placement) */}
+      <RevenueAttributionSection
+        revenueSources={revenueSources}
+        jurisdiction={jurisdiction}
+        yourContribution={contribution.totalAnnual}
+      />
+
       {/* Where Your Money Comes From - Enhanced */}
       <div className="card">
         <div className="flex items-center justify-between mb-4">
@@ -440,24 +494,49 @@ export function ContributionDashboard() {
           <div className="mt-6 pt-4 border-t border-border">
             <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
               <Info size={14} />
-              {jurisdiction.name} Tax Rates
+              {jurisdiction.name} Tax Rates & Assumptions
             </h4>
             <div className="grid sm:grid-cols-2 gap-3 text-sm">
-              {revenueSources.map((source) => (
-                <div key={source.id} className="flex justify-between p-2 bg-secondary/30 rounded">
-                  <span className="text-muted">{source.name}</span>
-                  <span className="font-medium">
-                    {source.type === 'property_tax' && source.rate
-                      ? `${(source.rate * 1000).toFixed(1)} mills`
-                      : source.type === 'utility_fees' && source.rate
-                      ? `${formatCurrency(source.rate)}/mo base`
-                      : source.rate
-                      ? `${(source.rate * 100).toFixed(2)}%`
-                      : 'Varies'}
-                  </span>
-                </div>
-              ))}
+              {revenueSources.map((source) => {
+                // Format rate based on source type
+                let rateDisplay = 'Varies';
+                if (source.type === 'property_tax' && source.rate) {
+                  // Property tax: show as $ per $100 of assessed value
+                  const perHundred = source.rate * 100;
+                  rateDisplay = `$${perHundred.toFixed(4)}/$100`;
+                } else if (source.type === 'utility_fees' && source.rate) {
+                  rateDisplay = `${formatCurrency(source.rate)}/mo base`;
+                } else if (source.type === 'permits_fees' && source.rate) {
+                  // Permits/fees: rate is typically a per-resident estimate
+                  rateDisplay = `~${formatCurrency(source.rate)}/resident`;
+                } else if (source.type === 'sales_tax' && source.rate) {
+                  rateDisplay = `${(source.rate * 100).toFixed(2)}%`;
+                } else if ((source.type === 'income_tax' || source.type === 'wage_tax') && source.rate) {
+                  rateDisplay = `${(source.rate * 100).toFixed(2)}%`;
+                } else if (source.type === 'grants' || source.type === 'other') {
+                  rateDisplay = 'N/A';
+                }
+
+                return (
+                  <div key={source.id} className="flex justify-between p-2 bg-secondary/30 rounded">
+                    <span className="text-muted">{source.name}</span>
+                    <span className="font-medium">{rateDisplay}</span>
+                  </div>
+                );
+              })}
             </div>
+
+            {/* Calculation Assumptions */}
+            <div className="mt-4 p-3 bg-secondary/20 rounded-lg">
+              <h5 className="text-xs font-semibold text-muted mb-2">Calculation Assumptions</h5>
+              <ul className="text-xs text-muted space-y-1">
+                <li>• <strong>Sales Tax:</strong> Based on ~30% of household income going to taxable purchases</li>
+                <li>• <strong>Vehicle Tax:</strong> Assumes average vehicle value of $25,000 per vehicle</li>
+                <li>• <strong>Utility Fees:</strong> Scaled by household size (1 person = 0.85×, 4 people = 1.30×)</li>
+                <li>• <strong>Service Fees:</strong> Estimated per-resident average from total revenue</li>
+              </ul>
+            </div>
+
             <p className="text-xs text-muted mt-3">
               Total jurisdiction revenue: {formatCurrency(jurisdiction.totalBudget, false)} •
               Population: {jurisdiction.population.toLocaleString()} •
@@ -567,13 +646,6 @@ export function ContributionDashboard() {
           </p>
         </div>
       </div>
-
-      {/* Who Funds the Budget - Revenue Attribution */}
-      <RevenueAttributionSection
-        revenueSources={revenueSources}
-        jurisdiction={jurisdiction}
-        yourContribution={contribution.totalAnnual}
-      />
 
       {/* What-If Scenarios */}
       <div className="card border-dashed">
