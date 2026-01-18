@@ -607,22 +607,22 @@ export function ContributionDashboard() {
             .map((service) => (
               <div
                 key={service.categoryId}
-                className="p-4 rounded-xl text-white"
+                className="p-4 rounded-xl text-white overflow-hidden"
                 style={{ background: `linear-gradient(135deg, ${service.color}, ${service.color}dd)` }}
               >
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-white/20 rounded-lg">
+                  <div className="p-2 bg-white/20 rounded-lg shrink-0">
                     <ServiceIconComponent icon={service.icon} size={24} className="text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold">{service.categoryName}</h4>
-                    <div className="text-2xl font-bold mt-1">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-sm leading-tight truncate">{service.categoryName}</h4>
+                    <div className="text-xl font-bold mt-1">
                       {formatCurrency(roundDaily(service.daily, dailyRounding))}/day
                     </div>
                     <div className="text-white/70 text-xs mt-1">
                       {formatCurrency(service.annual, false)}/year
                     </div>
-                    <p className="text-white/80 text-sm mt-1">{service.description}</p>
+                    <p className="text-white/80 text-xs mt-1 line-clamp-2">{service.description}</p>
                   </div>
                 </div>
               </div>
@@ -648,39 +648,90 @@ export function ContributionDashboard() {
       </div>
 
       {/* What-If Scenarios */}
-      <div className="card border-dashed">
-        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          <HelpCircle size={18} />
-          What if...?
-        </h3>
-        <div className="space-y-2 text-sm text-secondary-foreground">
-          {residentProfile.housingStatus === 'rent' && (
-            <p>
-              <strong>If you owned a home</strong> at the median value of {formatCurrency(jurisdiction.medianHomeValue, false)},
-              you&apos;d pay approximately {formatCurrency(
-                jurisdiction.medianHomeValue *
-                (revenueSources.find(s => s.type === 'property_tax')?.base || 0.35) *
-                (revenueSources.find(s => s.type === 'property_tax')?.rate || 0.01)
-              )} in property tax.
+      {(() => {
+        // Calculate potential scenarios
+        const realEstateSource = revenueSources.find(s =>
+          s.type === 'property_tax' &&
+          (s.id.includes('real-estate') || s.name.toLowerCase().includes('real estate') ||
+           (!s.id.includes('personal') && !s.name.toLowerCase().includes('personal')))
+        );
+        const wageSource = revenueSources.find(s => s.type === 'wage_tax');
+        const personalPropertySource = revenueSources.find(s =>
+          s.type === 'property_tax' &&
+          (s.id.includes('personal') || s.name.toLowerCase().includes('personal'))
+        );
+
+        const scenarios: { title: string; description: string; impact: string; positive: boolean }[] = [];
+
+        // Home ownership scenario
+        if (residentProfile.housingStatus === 'rent' && realEstateSource) {
+          const potentialTax = jurisdiction.medianHomeValue *
+            (realEstateSource.base || 1) *
+            (realEstateSource.rate || 0.01);
+          scenarios.push({
+            title: 'If you owned a home',
+            description: `At the median value of ${formatCurrency(jurisdiction.medianHomeValue, false)}`,
+            impact: `+${formatCurrency(potentialTax)}/year in property tax`,
+            positive: false,
+          });
+        }
+
+        // Work location scenarios
+        if (wageSource) {
+          const wageTaxAmount = residentProfile.householdIncome * (wageSource.rate || 0.01);
+          if (!residentProfile.worksLocally) {
+            scenarios.push({
+              title: `If you worked in ${jurisdiction.name}`,
+              description: 'Wage tax would apply to your income',
+              impact: `+${formatCurrency(wageTaxAmount)}/year`,
+              positive: false,
+            });
+          } else {
+            scenarios.push({
+              title: `If you worked outside ${jurisdiction.name}`,
+              description: 'Wage tax wouldn\'t apply',
+              impact: `-${formatCurrency(contribution.breakdown.wageTax)}/year saved`,
+              positive: true,
+            });
+          }
+        }
+
+        // Vehicle scenario
+        if (personalPropertySource && residentProfile.vehiclesRegistered !== undefined) {
+          const additionalVehicleTax = 25000 * (personalPropertySource.rate || 0.04);
+          scenarios.push({
+            title: 'Each additional vehicle',
+            description: 'At assumed $25,000 value',
+            impact: `+${formatCurrency(additionalVehicleTax)}/year`,
+            positive: false,
+          });
+        }
+
+        if (scenarios.length === 0) return null;
+
+        return (
+          <div className="card border-dashed">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <HelpCircle size={18} />
+              Explore Scenarios
+            </h3>
+            <p className="text-xs text-muted mb-3">
+              See how changes to your situation would affect your contribution
             </p>
-          )}
-          {!residentProfile.worksLocally && revenueSources.some(s => s.type === 'wage_tax') && (
-            <p>
-              <strong>If you worked in {jurisdiction.name}</strong>, you&apos;d pay an additional{' '}
-              {formatCurrency(
-                residentProfile.householdIncome *
-                (revenueSources.find(s => s.type === 'wage_tax')?.rate || 0.01)
-              )} in wage tax annually.
-            </p>
-          )}
-          {residentProfile.worksLocally && revenueSources.some(s => s.type === 'wage_tax') && (
-            <p>
-              <strong>If you worked outside {jurisdiction.name}</strong>, you&apos;d save{' '}
-              {formatCurrency(contribution.breakdown.wageTax)} in wage tax annually.
-            </p>
-          )}
-        </div>
-      </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {scenarios.map((scenario, idx) => (
+                <div key={idx} className="p-3 bg-secondary/30 rounded-lg">
+                  <div className="font-medium text-sm">{scenario.title}</div>
+                  <div className="text-xs text-muted">{scenario.description}</div>
+                  <div className={`text-sm font-semibold mt-1 ${scenario.positive ? 'text-green-600' : 'text-amber-600'}`}>
+                    {scenario.impact}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
