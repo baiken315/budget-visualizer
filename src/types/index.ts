@@ -63,9 +63,13 @@ export type ServiceIcon =
   | 'truck' // public works
   | 'lightbulb' // utilities/electric
   | 'graduation-cap' // education
-  | 'scales' // courts/legal
+  | 'scale' // courts/legal
+  | 'scales' // courts/legal (alias)
   | 'users' // community services
-  | 'home'; // housing
+  | 'home' // housing
+  | 'wallet' // finance/debt
+  | 'hammer' // capital/construction
+  | 'gift'; // grants/contributions
 
 export interface BudgetCategory {
   id: string;

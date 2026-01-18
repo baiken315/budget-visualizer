@@ -15,6 +15,9 @@ import {
   Scale,
   Users,
   Home,
+  Wallet,
+  Hammer,
+  Gift,
   type LucideIcon,
 } from 'lucide-react';
 import { ServiceIcon } from '@/types';
@@ -31,9 +34,13 @@ const iconMap: Record<ServiceIcon, LucideIcon> = {
   truck: Truck,
   lightbulb: Lightbulb,
   'graduation-cap': GraduationCap,
+  scale: Scale,
   scales: Scale,
   users: Users,
   home: Home,
+  wallet: Wallet,
+  hammer: Hammer,
+  gift: Gift,
 };
 
 interface ServiceIconProps {
@@ -62,4 +69,7 @@ export {
   Scale,
   Users,
   Home,
+  Wallet,
+  Hammer,
+  Gift,
 };

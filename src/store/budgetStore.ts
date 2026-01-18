@@ -26,7 +26,7 @@ interface BudgetStore {
   scenarioCategories: BudgetCategory[];
 
   // UI state
-  activeTab: 'calculator' | 'simulator' | 'infographic' | 'admin';
+  activeTab: 'calculator' | 'simulator' | 'infographic' | 'data';
 
   // Actions
   setJurisdiction: (jurisdiction: Jurisdiction) => void;

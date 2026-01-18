@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useBudgetStore } from '@/store/budgetStore';
 import { getSampleJurisdiction } from '@/data/sampleData';
 import { JurisdictionBuilder } from '@/components/JurisdictionBuilder';
-import { Building2, TreePine, MapPin, PlusCircle, X } from 'lucide-react';
+import { Building2, TreePine, MapPin, PlusCircle, X, Landmark } from 'lucide-react';
 
 export function JurisdictionSelector() {
   const {
@@ -17,7 +17,7 @@ export function JurisdictionSelector() {
 
   const [showBuilder, setShowBuilder] = useState(false);
 
-  const loadSampleData = (type: 'township' | 'city') => {
+  const loadSampleData = (type: 'township' | 'city' | 'county') => {
     const data = getSampleJurisdiction(type);
     setJurisdiction(data.jurisdiction);
     setBudgetCategories(data.categories);
@@ -79,7 +79,7 @@ export function JurisdictionSelector() {
         to explore, or create your own.
       </p>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Small Township Option */}
         <button
           onClick={() => loadSampleData('township')}
@@ -123,6 +123,29 @@ export function JurisdictionSelector() {
           </p>
           <div className="mt-3 text-sm text-primary font-medium group-hover:underline">
             Explore this city →
+          </div>
+        </button>
+
+        {/* Large County Option - Fairfax County */}
+        <button
+          onClick={() => loadSampleData('county')}
+          className="group p-6 text-left border-2 border-border rounded-xl hover:border-primary transition-all"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-xl group-hover:bg-amber-200 dark:group-hover:bg-amber-900/50 transition-colors">
+              <Landmark className="text-amber-600" size={28} />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">Large County</h3>
+              <p className="text-sm text-muted">~1.15M residents</p>
+            </div>
+          </div>
+          <p className="text-sm text-secondary-foreground">
+            Fairfax County, VA - One of America&apos;s largest counties with a $5.4B budget
+            and comprehensive services.
+          </p>
+          <div className="mt-3 text-sm text-primary font-medium group-hover:underline">
+            Explore this county →
           </div>
         </button>
 

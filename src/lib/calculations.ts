@@ -55,10 +55,23 @@ function calculateContributionBreakdown(
   for (const source of revenueSources) {
     switch (source.type) {
       case 'property_tax':
-        if (resident.housingStatus === 'own' && resident.homeValue) {
-          // Typical assessment ratio is around 100% but varies
+        // Check if this is a real estate tax (applies to home) vs personal property (vehicles)
+        const isRealEstateTax = source.id.includes('real-estate') ||
+                                source.name.toLowerCase().includes('real estate') ||
+                                (!source.id.includes('personal') && !source.name.toLowerCase().includes('personal'));
+
+        if (isRealEstateTax && resident.housingStatus === 'own' && resident.homeValue) {
+          // Real estate tax: rate is typically expressed as $ per $100 of value
+          // If rate < 0.1, assume it's already a decimal (e.g., 0.0111 = $1.11/$100)
+          // If rate >= 0.1, assume it's $/100 and divide by 100
           const assessedValue = resident.homeValue * (source.base || 1);
-          breakdown.propertyTax = assessedValue * (source.rate || 0.01);
+          const effectiveRate = source.rate || 0.01;
+          breakdown.propertyTax += assessedValue * effectiveRate;
+        } else if (!isRealEstateTax && resident.vehiclesRegistered) {
+          // Personal property tax on vehicles
+          // Estimate average vehicle value at $25,000
+          const estimatedVehicleValue = resident.vehiclesRegistered * 25000;
+          breakdown.propertyTax += estimatedVehicleValue * (source.rate || 0.04);
         }
         break;
 

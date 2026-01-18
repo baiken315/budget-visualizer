@@ -6,7 +6,8 @@ import { ResidentCalculator } from '@/components/ResidentCalculator';
 import { ContributionDashboard } from '@/components/ContributionDashboard';
 import { BudgetSimulator } from '@/components/BudgetSimulator';
 import { InfographicGenerator } from '@/components/InfographicGenerator';
-import { Calculator, Sliders, Image, BarChart3 } from 'lucide-react';
+import { DataManager } from '@/components/DataManager';
+import { Calculator, Sliders, Image, BarChart3, Database } from 'lucide-react';
 
 export default function Home() {
   const { jurisdiction, activeTab, setActiveTab, contribution } = useBudgetStore();
@@ -15,6 +16,7 @@ export default function Home() {
     { id: 'calculator' as const, label: 'My Impact', icon: Calculator },
     { id: 'simulator' as const, label: 'Budget Simulator', icon: Sliders },
     { id: 'infographic' as const, label: 'Share', icon: Image },
+    { id: 'data' as const, label: 'Data', icon: Database },
   ];
 
   return (
@@ -46,7 +48,8 @@ export default function Home() {
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
-                const isDisabled = tab.id !== 'calculator' && !contribution;
+                // Data tab is always available, others require contribution
+                const isDisabled = tab.id !== 'calculator' && tab.id !== 'data' && !contribution;
 
                 return (
                   <button
@@ -80,6 +83,8 @@ export default function Home() {
               {activeTab === 'simulator' && <BudgetSimulator />}
 
               {activeTab === 'infographic' && <InfographicGenerator />}
+
+              {activeTab === 'data' && <DataManager />}
             </div>
           </>
         )}

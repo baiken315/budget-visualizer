@@ -19,6 +19,7 @@ export function ResidentCalculator() {
   );
   const [worksLocally, setWorksLocally] = useState(residentProfile?.worksLocally ?? true);
   const [householdSize, setHouseholdSize] = useState(residentProfile?.householdSize || 2);
+  const [vehiclesRegistered, setVehiclesRegistered] = useState(residentProfile?.vehiclesRegistered || 2);
 
   // Update profile when inputs change
   useEffect(() => {
@@ -31,6 +32,7 @@ export function ResidentCalculator() {
       householdIncome,
       worksLocally,
       householdSize,
+      vehiclesRegistered,
     };
 
     setResidentProfile(profile);
@@ -41,6 +43,7 @@ export function ResidentCalculator() {
     householdIncome,
     worksLocally,
     householdSize,
+    vehiclesRegistered,
     setResidentProfile,
   ]);
 
@@ -55,6 +58,12 @@ export function ResidentCalculator() {
   // Check if income tax applies
   const hasIncomeTax = revenueSources.some(
     (s) => s.type === 'income_tax' || s.type === 'wage_tax'
+  );
+
+  // Check if personal property tax (vehicle tax) applies
+  const hasPersonalPropertyTax = revenueSources.some(
+    (s) => s.type === 'property_tax' &&
+           (s.id.includes('personal') || s.name.toLowerCase().includes('personal'))
   );
 
   return (
@@ -121,7 +130,7 @@ export function ResidentCalculator() {
               onChange={(e) => setHomeValue(Number(e.target.value))}
               className="w-full mt-2 accent-primary"
               min={50000}
-              max={750000}
+              max={2000000}
               step={5000}
             />
           </div>
@@ -204,6 +213,32 @@ export function ResidentCalculator() {
             ))}
           </div>
         </div>
+
+        {/* Vehicles (only if personal property tax exists) */}
+        {hasPersonalPropertyTax && (
+          <div>
+            <label className="label">Vehicles registered in {jurisdiction.name}</label>
+            <div className="flex gap-2">
+              {[0, 1, 2, 3, 4].map((count) => (
+                <button
+                  key={count}
+                  type="button"
+                  onClick={() => setVehiclesRegistered(count)}
+                  className={`flex-1 py-3 px-4 rounded-lg border-2 transition-all ${
+                    vehiclesRegistered === count
+                      ? 'border-primary bg-primary/10 text-primary font-medium'
+                      : 'border-border hover:border-muted'
+                  }`}
+                >
+                  {count}{count === 4 ? '+' : ''}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted mt-2">
+              Personal property tax is assessed on vehicles at approximately $4.57 per $100 of value
+            </p>
+          </div>
+        )}
 
         {housingStatus === 'rent' && (
           <div className="bg-secondary/50 p-4 rounded-lg">
