@@ -113,12 +113,12 @@ export function ResidentCalculator() {
               </span>
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none">$</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none">$</span>
               <input
                 type="number"
                 value={homeValue}
                 onChange={(e) => setHomeValue(Number(e.target.value))}
-                className="input pl-9"
+                className="input pl-8"
                 min={50000}
                 max={2000000}
                 step={5000}
@@ -140,12 +140,12 @@ export function ResidentCalculator() {
         <div>
           <label className="label">Annual household income</label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none">$</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none">$</span>
             <input
               type="number"
               value={householdIncome}
               onChange={(e) => setHouseholdIncome(Number(e.target.value))}
-              className="input pl-9"
+              className="input pl-8"
               min={20000}
               max={500000}
               step={1000}
