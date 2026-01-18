@@ -8,6 +8,7 @@ import { BudgetSimulator } from '@/components/BudgetSimulator';
 import { InfographicGenerator } from '@/components/InfographicGenerator';
 import { DataManager } from '@/components/DataManager';
 import { Calculator, Sliders, Image, BarChart3, Database } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Home() {
   const { jurisdiction, activeTab, setActiveTab, contribution } = useBudgetStore();
@@ -24,14 +25,17 @@ export default function Home() {
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <BarChart3 className="text-primary" size={24} />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <BarChart3 className="text-primary" size={24} />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold">Budget Builder</h1>
+                <p className="text-sm text-muted hidden sm:block">Understand your community contribution</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold">Budget Builder</h1>
-              <p className="text-sm text-muted">Understand your community contribution</p>
-            </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>

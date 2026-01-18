@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useBudgetStore } from '@/store/budgetStore';
 import { formatCurrency, formatPercentage, getEverydayComparison, roundDaily } from '@/lib/calculations';
 import { ServiceIconComponent } from '@/components/ui/Icons';
-import { Info, ChevronDown, ChevronUp, Calculator, HelpCircle, Building2, Users, Landmark, Plane } from 'lucide-react';
+import { Info, ChevronDown, ChevronUp, Calculator, HelpCircle, Building2, Users, Landmark, Plane, Maximize2, X } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -157,27 +157,27 @@ function RevenueAttributionSection({
       </div>
 
       {/* Legend */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm mb-4">
+      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-blue-500" />
-          <span>Residents</span>
-          <span className="font-medium">{formatPercentage(residentialPercent, 0)}</span>
+          <div className="w-3 h-3 rounded-full bg-blue-500 shrink-0" />
+          <span className="whitespace-nowrap">Residents</span>
+          <span className="font-medium whitespace-nowrap">{formatPercentage(residentialPercent, 0)}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-amber-500" />
-          <span>Businesses</span>
-          <span className="font-medium">{formatPercentage(commercialPercent, 0)}</span>
+          <div className="w-3 h-3 rounded-full bg-amber-500 shrink-0" />
+          <span className="whitespace-nowrap">Businesses</span>
+          <span className="font-medium whitespace-nowrap">{formatPercentage(commercialPercent, 0)}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-purple-500" />
-          <span>Government</span>
-          <span className="font-medium">{formatPercentage(governmentPercent, 0)}</span>
+          <div className="w-3 h-3 rounded-full bg-purple-500 shrink-0" />
+          <span className="whitespace-nowrap">Government</span>
+          <span className="font-medium whitespace-nowrap">{formatPercentage(governmentPercent, 0)}</span>
         </div>
         {visitorPercent > 0 && (
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span>Visitors</span>
-            <span className="font-medium">{formatPercentage(visitorPercent, 0)}</span>
+            <div className="w-3 h-3 rounded-full bg-green-500 shrink-0" />
+            <span className="whitespace-nowrap">Visitors</span>
+            <span className="font-medium whitespace-nowrap">{formatPercentage(visitorPercent, 0)}</span>
           </div>
         )}
       </div>
@@ -224,6 +224,7 @@ export function ContributionDashboard() {
   const { jurisdiction, contribution, residentProfile, revenueSources } = useBudgetStore();
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [showMath, setShowMath] = useState<string | null>(null);
+  const [showServicesModal, setShowServicesModal] = useState(false);
 
   if (!jurisdiction || !contribution || !residentProfile) {
     return (
@@ -600,15 +601,25 @@ export function ContributionDashboard() {
 
       {/* Service Tiles */}
       <div className="card">
-        <h3 className="text-lg font-semibold mb-4">What It Supports</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">What It Supports</h3>
+          <button
+            onClick={() => setShowServicesModal(true)}
+            className="hidden sm:flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            <Maximize2 size={14} />
+            Expand view
+          </button>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {contribution.serviceAllocations
             .sort((a, b) => b.daily - a.daily)
             .map((service) => (
               <div
                 key={service.categoryId}
-                className="p-4 rounded-xl text-white overflow-hidden"
+                className="p-4 rounded-xl text-white overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform sm:cursor-default sm:hover:scale-100"
                 style={{ background: `linear-gradient(135deg, ${service.color}, ${service.color}dd)` }}
+                onClick={() => window.innerWidth < 640 ? null : setShowServicesModal(true)}
               >
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-white/20 rounded-lg shrink-0">
@@ -629,6 +640,55 @@ export function ContributionDashboard() {
             ))}
         </div>
       </div>
+
+      {/* Services Modal */}
+      {showServicesModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowServicesModal(false)}>
+          <div
+            className="bg-card rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="text-xl font-semibold">What Your Contribution Supports</h3>
+              <button
+                onClick={() => setShowServicesModal(false)}
+                className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {contribution.serviceAllocations
+                  .sort((a, b) => b.daily - a.daily)
+                  .map((service) => (
+                    <div
+                      key={service.categoryId}
+                      className="p-5 rounded-xl text-white"
+                      style={{ background: `linear-gradient(135deg, ${service.color}, ${service.color}dd)` }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="p-3 bg-white/20 rounded-lg shrink-0">
+                          <ServiceIconComponent icon={service.icon} size={28} className="text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-base leading-tight">{service.categoryName}</h4>
+                          <div className="text-2xl font-bold mt-2">
+                            {formatCurrency(roundDaily(service.daily, dailyRounding))}/day
+                          </div>
+                          <div className="text-white/70 text-sm mt-1">
+                            {formatCurrency(service.annual, false)}/year
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-white/90 text-sm mt-3 leading-relaxed">{service.description}</p>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Collective Impact */}
       <div className="card bg-secondary/30">

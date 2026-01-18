@@ -30,8 +30,25 @@
   --color-card-foreground: var(--card-foreground);
 }
 
+/* Dark theme - class-based (manual toggle) */
+:root.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #1f2937;
+  --secondary-foreground: #d1d5db;
+  --accent: #34d399;
+  --accent-foreground: #000000;
+  --muted: #6b7280;
+  --border: #374151;
+  --card: #111827;
+  --card-foreground: #ededed;
+}
+
+/* Dark theme - system preference (when no class is set) */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light):not(.dark) {
     --background: #0a0a0a;
     --foreground: #ededed;
     --primary: #3b82f6;
