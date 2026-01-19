@@ -1,0 +1,211 @@
+
+{
+  "jurisdiction": {
+    "id": "fairfax-county",
+    "name": "Fairfax County",
+    "type": "county",
+    "state": "VA",
+    "population": 1150000,
+    "medianHomeValue": 730000,
+    "totalBudget": 5708653000,
+    "fiscalYear": "2026",
+    "governanceStructure": "Board of Supervisors",
+    "config": {
+      "maxCategories": 12,
+      "emphasis": "balanced_services",
+      "showFixedCosts": true,
+      "comparisonPhrase": "county services",
+      "dailyRounding": 0.01
+    }
+  },
+  "budgetCategories": [
+    {
+      "id": "schools",
+      "jurisdictionId": "fairfax-county",
+      "name": "Public Schools",
+      "amount": 2870000000,
+      "fixedPercentage": 90,
+      "icon": "book",
+      "color": "#3b82f6",
+      "description": "Transfer to Fairfax County Public Schools for operating and debt service support",
+      "constraints": [
+        "State Standards of Quality",
+        "Teacher contracts",
+        "Enrollment-driven costs"
+      ]
+    },
+    {
+      "id": "public-safety",
+      "jurisdictionId": "fairfax-county",
+      "name": "Public Safety",
+      "amount": 694000000,
+      "fixedPercentage": 85,
+      "icon": "shield",
+      "color": "#1e3a8a",
+      "description": "Police, Fire & Rescue, Sheriff, and emergency services",
+      "constraints": [
+        "24/7 staffing requirements",
+        "Collective bargaining agreements",
+        "Training and certification mandates"
+      ]
+    },
+    {
+      "id": "health-welfare",
+      "jurisdictionId": "fairfax-county",
+      "name": "Health & Human Services",
+      "amount": 620000000,
+      "fixedPercentage": 75,
+      "icon": "heart",
+      "color": "#ef4444",
+      "description": "Community services, family services, public health, and social services",
+      "constraints": [
+        "State and federal program requirements",
+        "Caseload-driven costs"
+      ]
+    },
+    {
+      "id": "fringe-benefits",
+      "jurisdictionId": "fairfax-county",
+      "name": "Employee Fringe Benefits",
+      "amount": 608000000,
+      "fixedPercentage": 95,
+      "icon": "users",
+      "color": "#8b5cf6",
+      "description": "Retirement, health insurance, and other employee benefits",
+      "constraints": [
+        "Pension obligations",
+        "Health insurance contracts"
+      ]
+    },
+    {
+      "id": "county-debt",
+      "jurisdictionId": "fairfax-county",
+      "name": "County Debt Service",
+      "amount": 216000000,
+      "fixedPercentage": 100,
+      "icon": "wallet",
+      "color": "#f59e0b",
+      "description": "Principal and interest on county-issued bonds",
+      "constraints": [
+        "Bond covenants",
+        "Legal debt obligations"
+      ]
+    },
+    {
+      "id": "community-transportation",
+      "jurisdictionId": "fairfax-county",
+      "name": "Community Development & Transportation",
+      "amount": 200000000,
+      "fixedPercentage": 60,
+      "icon": "road",
+      "color": "#10b981",
+      "description": "Housing, transit, and community development programs",
+      "constraints": [
+        "Federal and state funding conditions"
+      ]
+    },
+    {
+      "id": "parks-libraries",
+      "jurisdictionId": "fairfax-county",
+      "name": "Parks & Libraries",
+      "amount": 74000000,
+      "fixedPercentage": 50,
+      "icon": "trees",
+      "color": "#22c55e",
+      "description": "Park authority and public library system",
+      "constraints": [
+        "Facility maintenance"
+      ]
+    },
+    {
+      "id": "general-government",
+      "jurisdictionId": "fairfax-county",
+      "name": "General Government & Central Services",
+      "amount": 426653000,
+      "fixedPercentage": 70,
+      "icon": "building",
+      "color": "#6b7280",
+      "description": "Judicial administration, legislative-executive, IT, finance, and other central services",
+      "constraints": [
+        "Staffing costs",
+        "Technology and insurance obligations"
+      ]
+    }
+  ],
+  "revenueSources": [
+  {
+    "id": "real-estate-tax",
+    "jurisdictionId": "fairfax-county",
+    "type": "property_tax",
+    "name": "Real Estate Taxes",
+    "amount": 3740000000,
+    "rate": 0.011225,
+    "base": 1.0,
+    "description": "Tax on residential and commercial real property assessed at 100% of fair market value",
+    "payer": "mixed",
+    "residentialShare": 75
+  },
+  {
+    "id": "personal-property-tax",
+    "jurisdictionId": "fairfax-county",
+    "type": "property_tax",
+    "name": "Personal Property Taxes",
+    "amount": 830000000,
+    "rate": 0.0457,
+    "description": "Tax on vehicles and business tangible personal property, net of state relief",
+    "payer": "mixed",
+    "residentialShare": 65
+  },
+  {
+    "id": "other-local-taxes",
+    "jurisdictionId": "fairfax-county",
+    "type": "sales_tax",
+    "name": "Other Local Taxes",
+    "amount": 640000000,
+    "rate": 0.01,
+    "description": "Local sales tax share plus BPOL, meals, transient occupancy, and utility taxes",
+    "payer": "mixed",
+    "residentialShare": 60
+  },
+  {
+    "id": "state-federal",
+    "jurisdictionId": "fairfax-county",
+    "type": "grants",
+    "name": "State & Federal Revenue",
+    "amount": 170000000,
+    "description": "Aid and reimbursements from the Commonwealth of Virginia and the federal government",
+    "payer": "government",
+    "residentialShare": 0
+  },
+  {
+    "id": "charges-services",
+    "jurisdictionId": "fairfax-county",
+    "type": "permits_fees",
+    "name": "Charges for Services",
+    "amount": 72000000,
+    "rate": 62.6,
+    "description": "Fees for services such as EMS transport, court services, clerk fees, and program charges",
+    "payer": "mixed",
+    "residentialShare": 70
+  },
+  {
+    "id": "other-revenue",
+    "jurisdictionId": "fairfax-county",
+    "type": "other",
+    "name": "Other Revenue",
+    "amount": 61000000,
+    "description": "Fines, forfeitures, permits, licenses, interest earnings, and miscellaneous revenue",
+    "payer": "mixed",
+    "residentialShare": 50
+  }
+],
+  "averageResident": {
+    "jurisdictionId": "fairfax-county",
+    "housingStatus": "own",
+    "homeValue": 730000,
+    "householdIncome": 145000,
+    "worksLocally": true,
+    "householdSize": 2.7
+  }
+}
+

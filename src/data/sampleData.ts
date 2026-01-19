@@ -337,16 +337,15 @@ export const cityRevenueSources: RevenueSource[] = [
   },
 ];
 
-// Sample Large County - Fairfax County, VA (FY 2025)
 export const sampleCounty: Jurisdiction = {
   id: 'fairfax-county',
   name: 'Fairfax County',
   type: 'county',
   state: 'VA',
   population: 1150000,
-  medianHomeValue: 650000,
-  totalBudget: 5453319029, // $5.45 billion General Fund
-  fiscalYear: '2025',
+  medianHomeValue: 730000,
+  totalBudget: 5708653000,
+  fiscalYear: '2026',
   governanceStructure: 'Board of Supervisors',
   config: {
     maxCategories: 12,
@@ -362,187 +361,113 @@ export const countyBudgetCategories: BudgetCategory[] = [
     id: 'schools',
     jurisdictionId: 'fairfax-county',
     name: 'Public Schools',
-    amount: 2808938307, // 51.5%
+    amount: 2870000000,
     fixedPercentage: 90,
     icon: 'book',
     color: '#3b82f6',
-    description: 'Fairfax County Public Schools - operating, debt service, and capital',
+    description: 'Transfer to Fairfax County Public Schools for operating and debt service support',
     constraints: [
-      'State Standards of Quality mandates',
-      'Teacher contracts and salaries',
-      'Federal education requirements',
-      'School facility maintenance',
-    ],
+        'State Standards of Quality',
+        'Teacher contracts',
+        'Enrollment-driven costs',
+      ],
   },
   {
     id: 'public-safety',
     jurisdictionId: 'fairfax-county',
     name: 'Public Safety',
-    amount: 678218473, // 12.4%
+    amount: 694000000,
     fixedPercentage: 85,
     icon: 'shield',
-    color: '#ef4444',
-    description: 'Police, Fire, Sheriff, and emergency services',
+    color: '#1e3a8a',
+    description: 'Police, Fire & Rescue, Sheriff, and emergency services',
     constraints: [
-      'Minimum staffing requirements',
-      'Union contracts',
-      'Equipment and vehicle costs',
-      'Training mandates',
-    ],
+        '24/7 staffing requirements',
+        'Collective bargaining agreements',
+        'Training and certification mandates',
+      ],
   },
   {
     id: 'health-welfare',
     jurisdictionId: 'fairfax-county',
     name: 'Health & Human Services',
-    amount: 603011086, // 11.1%
-    fixedPercentage: 70,
+    amount: 620000000,
+    fixedPercentage: 75,
     icon: 'heart',
-    color: '#ec4899',
-    description: 'Community services, family services, health department, and social services',
+    color: '#ef4444',
+    description: 'Community services, family services, public health, and social services',
     constraints: [
-      'Federal/state program requirements',
-      'Medicaid matching funds',
-      'Mental health mandates',
-    ],
+        'State and federal program requirements',
+        'Caseload-driven costs',
+      ],
   },
   {
     id: 'fringe-benefits',
     jurisdictionId: 'fairfax-county',
-    name: 'Employee Benefits',
-    amount: 553173776, // 10.0%
+    name: 'Employee Fringe Benefits',
+    amount: 608000000,
     fixedPercentage: 95,
     icon: 'users',
     color: '#8b5cf6',
-    description: 'Retirement contributions, health insurance, and other employee benefits',
+    description: 'Retirement, health insurance, and other employee benefits',
     constraints: [
-      'Pension obligations',
-      'Health insurance contracts',
-      'OPEB requirements',
-    ],
-  },
-  {
-    id: 'transportation',
-    jurisdictionId: 'fairfax-county',
-    name: 'Transportation',
-    amount: 190145532, // 3.5%
-    fixedPercentage: 60,
-    icon: 'road',
-    color: '#6b7280',
-    description: 'Metro, Fairfax Connector, housing and community development',
-    constraints: [
-      'WMATA funding commitments',
-      'Transit operating agreements',
-    ],
+        'Pension obligations',
+        'Health insurance contracts',
+      ],
   },
   {
     id: 'county-debt',
     jurisdictionId: 'fairfax-county',
     name: 'County Debt Service',
-    amount: 149380516, // 2.7%
+    amount: 216000000,
     fixedPercentage: 100,
     icon: 'wallet',
     color: '#f59e0b',
-    description: 'Principal and interest payments on county bonds',
+    description: 'Principal and interest on county-issued bonds',
     constraints: [
-      'Bond covenants',
-      'Legal debt obligations',
-    ],
+        'Bond covenants',
+        'Legal debt obligations',
+      ],
   },
   {
-    id: 'central-services',
+    id: 'community-transportation',
     jurisdictionId: 'fairfax-county',
-    name: 'Central Services',
-    amount: 144668238, // 2.7%
-    fixedPercentage: 75,
-    icon: 'building',
-    color: '#06b6d4',
-    description: 'IT, tax administration, county insurance, and support services',
+    name: 'Community Development & Transportation',
+    amount: 200000000,
+    fixedPercentage: 60,
+    icon: 'road',
+    color: '#10b981',
+    description: 'Housing, transit, and community development programs',
     constraints: [
-      'Technology contracts',
-      'Insurance premiums',
-    ],
-  },
-  {
-    id: 'public-works',
-    jurisdictionId: 'fairfax-county',
-    name: 'Public Works',
-    amount: 87506358, // 1.6%
-    fixedPercentage: 55,
-    icon: 'truck',
-    color: '#84cc16',
-    description: 'Facilities management and infrastructure maintenance',
-    constraints: [
-      'Building maintenance schedules',
-      'Equipment leases',
-    ],
+        'Federal and state funding conditions',
+      ],
   },
   {
     id: 'parks-libraries',
     jurisdictionId: 'fairfax-county',
     name: 'Parks & Libraries',
-    amount: 71077313, // 1.3%
-    fixedPercentage: 45,
+    amount: 74000000,
+    fixedPercentage: 50,
     icon: 'trees',
-    color: '#10b981',
-    description: 'Park Authority and public library system',
+    color: '#22c55e',
+    description: 'Park authority and public library system',
     constraints: [
-      'Facility operations',
-      'Staff requirements',
-    ],
+        'Facility maintenance',
+      ],
   },
   {
-    id: 'judicial',
+    id: 'general-government',
     jurisdictionId: 'fairfax-county',
-    name: 'Courts & Justice',
-    amount: 57089421, // 1.0%
-    fixedPercentage: 80,
-    icon: 'scale',
-    color: '#a855f7',
-    description: 'Circuit Court, Sheriff court services, and judicial administration',
-    constraints: [
-      'Constitutional requirements',
-      'State court mandates',
-    ],
-  },
-  {
-    id: 'legislative',
-    jurisdictionId: 'fairfax-county',
-    name: 'County Government',
-    amount: 52900059, // 1.0%
+    name: 'General Government & Central Services',
+    amount: 426653000,
     fixedPercentage: 70,
     icon: 'building',
-    color: '#64748b',
-    description: 'Board of Supervisors, County Executive, County Attorney',
+    color: '#6b7280',
+    description: 'Judicial administration, legislative-executive, IT, finance, and other central services',
     constraints: [
-      'Elected official salaries',
-      'Legal requirements',
-    ],
-  },
-  {
-    id: 'capital',
-    jurisdictionId: 'fairfax-county',
-    name: 'Capital Projects',
-    amount: 32457700, // 0.6%
-    fixedPercentage: 30,
-    icon: 'hammer',
-    color: '#f97316',
-    description: 'Capital improvements and infrastructure investments',
-    constraints: [
-      'Approved project commitments',
-    ],
-  },
-  {
-    id: 'grants-contributions',
-    jurisdictionId: 'fairfax-county',
-    name: 'Contributories & Grants',
-    amount: 24752250, // 0.5%
-    fixedPercentage: 50,
-    icon: 'gift',
-    color: '#14b8a6',
-    description: 'Contributory fund and federal/state grant matches',
-    constraints: [
-      'Grant matching requirements',
-    ],
+        'Staffing costs',
+        'Technology and insurance obligations',
+      ],
   },
 ];
 
@@ -552,52 +477,42 @@ export const countyRevenueSources: RevenueSource[] = [
     jurisdictionId: 'fairfax-county',
     type: 'property_tax',
     name: 'Real Estate Taxes',
-    amount: 3574204859, // 65.7%
-    rate: 0.011225, // $1.1225 per $100 of assessed value (as decimal: 1.1225/100)
-    base: 1.0, // Virginia assesses at 100% fair market value
-    description: 'Tax on real property at $1.1225 per $100 assessed value',
+    amount: 3740000000,
+    rate: 0.011225,
+    base: 1,
+    description: 'Tax on residential and commercial real property assessed at 100% of fair market value',
     payer: 'mixed',
-    residentialShare: 72, // Residential vs commercial property split
+    residentialShare: 75,
   },
   {
     id: 'personal-property-tax',
     jurisdictionId: 'fairfax-county',
     type: 'property_tax',
     name: 'Personal Property Taxes',
-    amount: 812311989, // 14.9%
-    rate: 0.0457, // $4.57 per $100 for vehicles
-    description: 'Tax on vehicles, boats, and business equipment',
+    amount: 830000000,
+    rate: 0.0457,
+    description: 'Tax on vehicles and business tangible personal property, net of state relief',
     payer: 'mixed',
-    residentialShare: 80, // Mostly personal vehicles
+    residentialShare: 65,
   },
   {
-    id: 'local-taxes',
+    id: 'other-local-taxes',
     jurisdictionId: 'fairfax-county',
     type: 'sales_tax',
-    name: 'Local Taxes',
-    amount: 622131783, // 11.4%
-    rate: 0.01, // 1% local sales tax
-    description: 'Local sales tax, BPOL, consumer utility taxes',
+    name: 'Other Local Taxes',
+    amount: 640000000,
+    rate: 0.01,
+    description: 'Local sales tax share plus BPOL, meals, transient occupancy, and utility taxes',
     payer: 'mixed',
-    residentialShare: 55, // Mix of consumer and business sales
+    residentialShare: 60,
   },
   {
-    id: 'use-of-money',
-    jurisdictionId: 'fairfax-county',
-    type: 'other',
-    name: 'Investment Income',
-    amount: 166146069, // 3.0%
-    description: 'Interest on county investments and property use',
-    payer: 'mixed',
-    residentialShare: 0, // County investment returns
-  },
-  {
-    id: 'state-funding',
+    id: 'state-federal',
     jurisdictionId: 'fairfax-county',
     type: 'grants',
-    name: 'State Revenue',
-    amount: 116996680, // 2.1%
-    description: 'Commonwealth of Virginia shared revenue and aid',
+    name: 'State & Federal Revenue',
+    amount: 170000000,
+    description: 'Aid and reimbursements from the Commonwealth of Virginia and the federal government',
     payer: 'government',
     residentialShare: 0,
   },
@@ -606,42 +521,31 @@ export const countyRevenueSources: RevenueSource[] = [
     jurisdictionId: 'fairfax-county',
     type: 'permits_fees',
     name: 'Charges for Services',
-    amount: 69024437, // 1.3%
-    rate: 60, // Per resident estimate
-    description: 'EMS fees, recreation fees, clerk fees, and other service charges',
+    amount: 72000000,
+    rate: 62.6,
+    description: 'Fees for services such as EMS transport, court services, clerk fees, and program charges',
     payer: 'mixed',
-    residentialShare: 75,
-  },
-  {
-    id: 'federal-funding',
-    jurisdictionId: 'fairfax-county',
-    type: 'grants',
-    name: 'Federal Revenue',
-    amount: 41150532, // 0.8%
-    description: 'Federal grants and social services aid',
-    payer: 'government',
-    residentialShare: 0,
+    residentialShare: 70,
   },
   {
     id: 'other-revenue',
     jurisdictionId: 'fairfax-county',
     type: 'other',
     name: 'Other Revenue',
-    amount: 41008206, // ~0.8% (permits, fines, other)
-    description: 'Permits, fines, forfeitures, and miscellaneous',
+    amount: 61000000,
+    description: 'Fines, forfeitures, permits, licenses, interest earnings, and miscellaneous revenue',
     payer: 'mixed',
-    residentialShare: 60,
+    residentialShare: 50,
   },
 ];
 
 export const averageCountyResident: ResidentProfile = {
   jurisdictionId: 'fairfax-county',
   housingStatus: 'own',
-  homeValue: 650000,
-  householdIncome: 134000, // Fairfax County median household income
+  homeValue: 730000,
+  householdIncome: 145000,
   worksLocally: true,
   householdSize: 2.7,
-  vehiclesRegistered: 2, // Average household has 2 vehicles
 };
 
 // Sample "Average Resident" Profiles
