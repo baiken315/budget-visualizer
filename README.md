@@ -1,5 +1,7 @@
 # City Budget Builder
 
+Idea created during a group chat. Throwaway project for design ideas. 
+
 A civic budget visualization tool that transforms abstract municipal budgets into human-scale, understandable narratives. The core insight: **translating annual tax contributions into daily costs** ($3,200/year = $8.77/day) makes civic finance feel like everyday spending rather than intimidating government numbers.
 
 ## Quick Start
@@ -8,7 +10,7 @@ A civic budget visualization tool that transforms abstract municipal budgets int
 npm install
 npm run dev
 ```
-
+Test Site available at https://budget-visualizer-two.vercel.app/ 
 Open [http://localhost:3000](http://localhost:3000) to explore sample jurisdictions or create your own.
 
 ## Features
